@@ -13,10 +13,13 @@ const options = {
     hostname: 'cafemovie.me',
     port: 443,
     path: '/movie/dead-south-qnrYWqw7/watch',
-    method: 'GET'
+    method: 'GET',
+    headers: {
+        'Upgrade-Insecure-Requests': 1
+    }
 };
 
-https.get('https://cafemovie.me/movie/dead-south-qnrYWqw7/watch', (res) => {
+var req1 = https.request(options, (res) => {
     console.log('statusCode:', res.statusCode);
     console.log('headers:', res.headers);
 
@@ -37,12 +40,9 @@ https.get('https://cafemovie.me/movie/dead-south-qnrYWqw7/watch', (res) => {
         var delta = parseFloat(response.match(/delta[ ]*\=[ ]*([0-9.]*);/)[1]);
         cf.k = response.match(/cf.k[ ]*\=[ ]*([^;]*);/)[1];
         var csdiff = new Date().getTime()/1000 - parseFloat(response.match(/csdiff[ ]*\=[ ]*[^/]*[^-]*\-([^;]*);/)[1]);
-        // console.log(matches, cf.k, csdiff);
-
 
         var data_target_i = response.match(/data-target-i[ ]*\=[ ]*\"([^"]*)\"/)[1];
         var data_target_e = response.match(/data-target-e[ ]*\=[ ]*\"([^"]*)\"/)[1];
-        // console.log(data_target_e);
         var _0x5e19x5 = data_target_i,//_0x5e19x3[_0x9123[61]](_0x9123[529]), = data-target-i
             _0x5e19x6 = data_target_e,//_0x5e19x3[_0x9123[61]](_0x9123[530]), = data-target-e
             _0x5e19x7 = (new Date).getTime() / 1000,
@@ -55,14 +55,16 @@ https.get('https://cafemovie.me/movie/dead-south-qnrYWqw7/watch', (res) => {
         const options2 = {
             hostname: 'cafemovie.me',
             port: 443,
-            path: '/api/get_episode/AwqoElv7/dxnRXDor',
+            path: '/api/get_episode/'+data_target_i+'/'+data_target_e,
             method: 'GET',
             headers: {
-                'Cookie': cookieStr
+                'Cookie': cookieStr,
+                'X-Requested-With': "XMLHttpRequest",
+                'Referer': 'https://cafemovie.me/movie/dead-south-qnrYWqw7/watch'
             }
         };
 
-        https.request(options2, (res) => {
+        var req2 = https.request(options2, (res) => {
             console.log('statusCode:', res.statusCode);
             console.log('headers:', res.headers);
             response = '';
@@ -70,10 +72,14 @@ https.get('https://cafemovie.me/movie/dead-south-qnrYWqw7/watch', (res) => {
                 response += d.toString('utf8');
                 console.log(response);
             });
+
         })
+        req2.end();
     };
+
 
 })
 .on('error', (e) => {
     console.error(e);
 });
+req1.end();
